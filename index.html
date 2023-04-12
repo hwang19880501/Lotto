@@ -1,122 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-	<title>로또 번호 자동생성기 by.Jin</title>
-	<style>
-		body {
-			background-color: #333;
-			color: #fff;
-			font-size: 30px;
-			font-weight: bold;
-			text-align: center;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100vh;
-			margin: 0;
-			padding: 0;
-		}
+  <meta charset="UTF-8">
+  <title>로또 번호 생성기</title>
+  <style>
+#search-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgb(255, 0, 0);
+  z-index: 9999;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-		.box {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 80px;
-			height: 80px;
-			border-radius: 50%;
-			line-height: 80px;
-			margin: 10px;
-			border-radius: 50%;
-			font-weight: bold;
-			font-size: 50px;
-			text-align: center;
-			box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-		}
+#search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1px;
+}
 
-		.red {
-			background-color: #ff4d4d;
-		}
+#search-input {
+  width: 20%;
+  height: 20px;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-size: 16px;
+}
 
-		.orange {
-			background-color: #ffa64d;
-		}
+#search-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: -70px;
+  padding: 1px;
+}
 
-		.green {
-			background-color: #00b300;
-		}
+#search-button img {
+  height: 18px;
+  width: auto;
+}
 
-		.blue {
-			background-color: #4d4dff;
-		}
+@media screen and (max-width: 767px) {
+  #search-input {
+    width: 70%;
+  }
+}
 
-		.purple {
-			background-color: #bf80ff;
-		}
 
-		button {
-			background-color: #fff;
-			color: #333;
-			font-size: 24px;
-			font-weight: bold;
-			padding: 10px 20px;
-			border-radius: 5px;
-			margin: 10px;
-			border: none;
-			cursor: pointer;
-		}
-	</style>
+
+    /* 숫자 자동 추출 css */
+    body {
+      background-color: #333;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    .number {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      font-size: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+
+    .red {
+      background-color: #ff5252;
+    }
+
+    .orange {
+      background-color: #ff9f43;
+    }
+
+    .green {
+      background-color: #2ecc71;
+    }
+
+    .blue {
+      background-color: #3498db;
+    }
+
+    .purple {
+      background-color: #9b59b6;
+    }
+
+    button {
+      background-color: #fff;
+      color: #333;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .generated-numbers {
+      margin-bottom: 50px;
+    }
+
+    .saved-numbers-container {
+      margin-top: 1px;
+      margin-bottom: 1px;
+    }
+
+    hr {
+      margin: 10px 0;
+      border: none;
+      border-top: 3px solid #fff;
+      height: 1px;
+      /* 숫자 크기에 맞게 조절 */
+      opacity: 0.3;
+    }
+  </style>
 </head>
+
 <body>
-	<div>
-		<h1>로또 번호 자동생성기 by.Jin</h1>
-		<button onclick="generateNumbers()">생성하기</button>
-		<button onclick="reset()">초기화</button>
-		<div id="result"></div>
-	</div>
+  <div id="search-container">
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Google 검색">
+      <button type="submit" id="search-button">
+        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google 검색">
+      </button>
+    </form>
+  </div>
+  
+  
 
-	<script>
-		let recentNumbers = [];
+  <div class="container">
+    <h1>로또 번호 생성기</h1>
+    <div>
+      <button onclick="generateNumbers()">생성하기</button>
+      <button onclick="reset()">초기화</button>
+      <button onclick="save()">저장</button>
+    </div>
+    <div id="numberContainer"></div>
+  </div>
 
-		function generateNumbers() {
-			let numbers = [];
-			while (numbers.length < 6) {
-				let num = Math.floor(Math.random() * 45) + 1;
-				if (!numbers.includes(num)) {
-					numbers.push(num);
-				}
-			}
-			recentNumbers.unshift(numbers);
+  <div class="container saved-numbers">
+    <h2>┌───────────번호 저장───────────┐</h2>
+    <div id="savedNumbersContainer"></div>
+    <div class="horizontal-line"></div>
+  </div>
 
-			let result = document.getElementById("result");
-			result.innerHTML = "";
-			for (let i = 0; i < numbers.length; i++) {
-				let box = document.createElement("div");
-				box.classList.add("box");
-				box.style.backgroundColor = getRandomColor();
-				box.textContent = numbers[i];
-				result.appendChild(box);
-			}
+  <div id="savedNumbersContainer" class="container"></div>
 
-			let recentResult = document.createElement("p");
-			recentResult.textContent = "Extracted number: " + recentNumbers.join(", ");
-			result.appendChild(recentResult);
-		}
+  <script>
+const searchForm = document.querySelector('#search-form');
+const searchInput = document.querySelector('#search-input');
 
-		function reset() {
-			recentNumbers = [];
-			let result = document.getElementById("result");
-			result.innerHTML = "";
-		}
+searchForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const searchQuery = searchInput.value;
+  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+  window.location.href = searchUrl;
+});
 
-		function getRandomColor() {
-			let letters = "0123456789ABCDEF";
-			let color = "#";
-			for (let i = 0; i < 6; i++) {
-				color += letters[Math.floor(Math.random() * 16)];
-			}
-			return color;
-		}
-	</script>
+window.addEventListener('scroll', () => {
+  const searchContainer = document.querySelector('#search-container');
+  if (window.scrollY > 0) {
+    searchContainer.classList.add('scrolled');
+  } else {
+    searchContainer.classList.remove('scrolled');
+  }
+});
+
+
+
+
+    function generateNumbers() {
+      const numbers = [];
+      while (numbers.length < 6) {
+        const number = Math.floor(Math.random() * 45) + 1;
+        if (!numbers.includes(number)) {
+          numbers.push(number);
+        }
+      }
+      displayNumbers(numbers);
+    }
+
+    function displayNumbers(numbers) {
+      const numberContainer = document.getElementById("numberContainer");
+      numberContainer.innerHTML = "";
+      for (let i = 0; i < numbers.length; i++) {
+        const numberDiv = document.createElement("div");
+        numberDiv.className = "number " + getNumberColor(numbers[i]);
+        numberDiv.innerText = numbers[i];
+        numberContainer.appendChild(numberDiv);
+      }
+    }
+
+    function getNumberColor(number) {
+      if (number <= 10) return "red";
+      else if (number <= 20) return "orange";
+      else if (number <= 30) return "green";
+      else if (number <= 40) return "blue";
+      else return "purple";
+    }
+
+    function reset() {
+      const numberContainer = document.getElementById("numberContainer");
+      numberContainer.innerHTML = "";
+    }
+
+    let savedCount = 0; // 저장된 번호의 개수를 세는 변수
+
+    function save() {
+      const numberContainer = document.getElementById("numberContainer");
+      const numbers = numberContainer.getElementsByTagName("div");
+      const savedNumbersContainer = document.createElement("div");
+      savedNumbersContainer.className = "container";
+      savedNumbersContainer.style.marginTop = "10px"; // 변경된 부분
+      for (let i = 0; i < numbers.length; i++) {
+        const savedNumberDiv = document.createElement("div");
+        savedNumberDiv.className = numbers[i].className + " number";
+        savedNumberDiv.innerText = numbers[i].innerText;
+        savedNumbersContainer.appendChild(savedNumberDiv);
+      }
+      if (savedCount < 10) { // 최대 5개까지만 저장 가능하도록 조건 추가
+        document.body.appendChild(savedNumbersContainer);
+        savedCount++;
+      } else {
+        alert("최대 10개까지만 저장 가능합니다.");
+      }
+    }
+
+  </script>
 </body>
+
 </html>
